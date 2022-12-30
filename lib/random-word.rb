@@ -24,7 +24,7 @@ class RandomWord
         end
 
         word = generate_word
-        p word
+        word
     end
 
     def check_difficulty(difficulty)
@@ -33,7 +33,7 @@ class RandomWord
             @word_length = get_word_length(difficulty)
             @valid_difficulty = true
         else
-            
+
         end
     end
 
