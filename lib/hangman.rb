@@ -8,6 +8,7 @@ class Hangman
         @attempts_left = 7
         @secret_word = word.split('')
         @valid_guess = false
+        @previously_guess = []
     end
 
     def play
@@ -17,6 +18,11 @@ class Hangman
             #@guess = get_guess
             #check_validity(@guess)
         #end
+    end
+
+    def secret_word
+        #will display underscores/letters correctly guessed
+        #checks previously guessed list, then will permanently change underscore if there are any matches
     end
 
     def get_guess
@@ -34,7 +40,6 @@ class Hangman
     def check_guess
         #convert string (guess) into list and see if it matches with hidden word (if yes, then player wins)
         #if player guessed letter, then check if secret word includes the letter
-        #if no then
     end
 
     def end_game
