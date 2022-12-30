@@ -1,50 +1,56 @@
-require './display.rb'
+require_relative 'display.rb'
 
 class RandomWord
     include Display
 
+    attr_accessor :word
+
     @@valid_modes = ['1', '2', '3']
 
     def initialize
-        @word = get_word()
-        @word_length= 0
+        @word = get_word
+        @word_length = ''
         @valid_difficulty = false
-        @word_file = File.open('../google-10000-english-no-swears.txt')
     end
 
     def get_word
-        while @valid_difficulty
-            puts "Choose a difficulty"
+        display_banner
+        until @valid_difficulty
+            puts "Choose a difficulty:"
+            puts
             puts "Easy = 1 | Medium = 2 | Hard = 3"
-            difficulty = gets.chomp
+            difficulty = gets.chomp.to_s
             check_difficulty(difficulty)
         end
 
-        @word_file = @word_file.readlines.shuffle.join
-        word = @word_file.each_line do |line|
-            if line.length == @word_length
-                return line.rstrip()
-        word
+        word = generate_word
+        p word
     end
 
     def check_difficulty(difficulty)
-        if difficulty in @@valid_modes
+        if @@valid_modes.include?(difficulty)
             puts "Difficulty chosen: #{display_difficulty(difficulty)}"
-            get_word_length(difficulty)
+            @word_length = get_word_length(difficulty)
             @valid_difficulty = true
         else
-            puts "You did not enter a valid option"
+            
         end
     end
 
     def get_word_length(difficulty)
-        if difficulty == '1'
-            @word_length = 4
-        elsif difficulty == '2'
-            @word_length = 8
-        elsif difficulty == '3'
-            @word_length == 12
-        else
-            puts 'COULDN\'T GET DIFFICULTY'
+        {
+            '1' => 4,
+            '2' => 8,
+            '3' => 12
+        }[difficulty]
+    end
+
+    def generate_word
+        word_file = File.open('google-10000-english-no-swears.txt', 'r')
+
+        word_file = word_file.readlines.shuffle
+
+        word = word_file.detect{|line| line.rstrip.length == @word_length}
+        word.rstrip
     end
 end
