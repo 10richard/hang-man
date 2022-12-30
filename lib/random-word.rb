@@ -13,6 +13,8 @@ class RandomWord
         @valid_difficulty = false
     end
 
+    private
+
     def get_word
         display_banner
         until @valid_difficulty
