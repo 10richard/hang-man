@@ -33,7 +33,7 @@ class RandomWord
             @word_length = get_word_length(difficulty)
             @valid_difficulty = true
         else
-
+            puts display_errors('failed_pick')
         end
     end
 
