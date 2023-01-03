@@ -16,7 +16,6 @@ class RandomWord
     private
 
     def get_word
-        display_banner
         until @valid_difficulty
             puts "Choose a difficulty:"
             puts
