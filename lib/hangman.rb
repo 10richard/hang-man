@@ -137,17 +137,23 @@ class Hangman < RandomWord
 
     def validate_save
         valid_answers = ['y', 'n']
+        puts
         puts display_instructions('save_game?')
         answer = gets.chomp
         until valid_answers.include?(answer)
+            puts
             puts display_errors('failed_pick')
-            puts 'Enter y or n'
+            puts
+            puts "Enter 'y' or 'n'"
             answer = gets.chomp
         end
 
         if answer == 'y'
             save_game
         elsif answer == 'n'
+            puts 
+            puts "Attempts left: #{display_attempts(@attempts_left)}"
+            puts letter_guesses(@prev_guesses)
             return
         else
             puts 'What did you do >:('
