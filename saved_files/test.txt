@@ -1,0 +1,1 @@
+{"guess":"","attempts_left":4,"secret_word":["s","i","g","n","i","f","i","c","a","n","c","e"],"hidden_key":["_","_","g","_","_","_","_","_","a","_","_","e"],"prev_guesses":["a","r","h","b","p","o","l","e","g"]}
