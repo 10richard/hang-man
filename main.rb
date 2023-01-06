@@ -1,4 +1,3 @@
-require './lib/random-word.rb'
 require './lib/hangman.rb'
 require './lib/display.rb'
 
