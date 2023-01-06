@@ -2,8 +2,8 @@ require_relative 'color.rb'
 
 module Display
 
-    def saved_files
-        "Saved files: #{Dir.entries('./saved_files').join(', ')}"
+    def dir_files(directory)
+        "Saved files: #{directory.join(', ')}"
     end
 
     def display_difficulty(difficulty)
@@ -18,7 +18,9 @@ module Display
         {
             'get_guess' => 'Please enter a guess',
             'save_game?' => 'Do you want to save the game? (y/n)',
-            'ask_save' => "Enter 'save' to save the game "
+            'ask_save' => "Enter 'save' to save the game",
+            'select_file' => 'Enter the name of the file that you want to load up',
+            'name_save' => 'Enter the desired name for this save'
         }[option]
     end
 
@@ -40,7 +42,9 @@ module Display
             'failed_pick' => 'You did not enter any of the given options',
             'not_letter' => 'You did not enter a valid guess (please only enter alphabetical characters)',
             'already_guessed' => 'You already guessed this...',
-            'one_letter' => 'You did not enter a letter'
+            'one_letter' => 'You did not enter a letter',
+            'invalid_file' => 'You did not enter an existing file',
+            'save_file' => 'The name you entered already exists'
         }[error]
     end
 
