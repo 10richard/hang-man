@@ -1,22 +1,28 @@
 require_relative 'display.rb'
+require_relative 'random-word.rb'
 require 'json'
 
-class Hangman
+class Hangman < RandomWord
     include Display
 
-    def initialize(word)
+    attr_accessor :secret_word
+
+    def initialize(load_game)
         @guess = ''
         @attempts_left = 10
-        @secret_word = word.split('')
-        @hidden_key = Array.new(@secret_word.length, '_')
+        @saved_game = load_game
+        @secret_word = ''
+        @hidden_key = ''
         @valid_guess = false
         @game_over = false
         @winner = false
         @prev_guesses = []
+        @filename = ''
     end
 
     def play
         #will run all methods here
+        loaded_game?
         until @game_over
             puts
             puts "Attempts left: #{display_attempts(@attempts_left)}"
@@ -32,7 +38,23 @@ class Hangman
             @valid_guess = false
             end_game?
         end
-        puts @winner == true ? game_result('win', @secret_word) : game_result('lose', @secret_word)
+        puts
+        if @winner == nil
+            return
+        else
+            delete_file?
+            puts @winner == true ? game_result('win', @secret_word) : game_result('lose', @secret_word)
+        end
+    end
+
+    def loaded_game?
+        if @saved_game
+            @secret_word = get_word()
+            @secret_word = @secret_word.split('')
+            @hidden_key = Array.new(@secret_word.length, '_')
+        else
+            load_game()
+        end
     end
 
     def modify_key?
@@ -105,6 +127,14 @@ class Hangman
         end
     end
 
+    def delete_file?
+        if @saved_game
+            return
+        else
+            File.delete("saved_files/#{@filename}")
+        end
+    end
+
     def validate_save
         valid_answers = ['y', 'n']
         puts display_instructions('save_game?')
@@ -127,12 +157,25 @@ class Hangman
     def save_game
         #will serialize: previously guess list, attempts left, and hidden word
         #tbh have 0 clue what I will do here, but we move :)
-        
+        got_name = false
+        saved_files = Dir.entries('saved_files')
+        puts display_instructions('name_save')
+        until got_name
+            filename = gets.chomp
+            if !File.exists?("saved_files/#{filename}.txt")
+                got_name = true
+            end
+            puts got_name ? "Saved this game to #{filename} file" : display_errors('save_file')
+        end
+        File.open("saved_files/#{filename}.txt", 'w') do |f|
+            f.write(to_json)
+        end
+        exit()
     end
 
     def to_json
         JSON.dump ({
-            guess: @guess,
+            guess: '',
             attempts_left: @attempts_left,
             secret_word: @secret_word,
             hidden_key: @hidden_key,
@@ -140,12 +183,43 @@ class Hangman
         })
     end
 
+    def load_game
+        saved_files = Dir.entries('saved_files').select {|f| File.file?("saved_files/#{f}")}
+        got_file = false
+    
+        if Dir.empty?('saved_files')
+            puts "There are no saved files on record"
+            new_game()
+        else
+            puts dir_files(saved_files)
+            puts display_instructions('select_file')
+            until got_file
+                filename = gets.chomp
+                saved_files.each do |file|
+                    if file == filename
+                        got_file = true
+                    end
+                end
+                puts got_file ? "Loading '#{filename}'..." : display_errors('invalid_file')
+            end
+        end
+        
+        @filename = filename
+        load_file(filename)
+    end
+
+    def load_file(file)
+        load_file = File.open("saved_files/#{file}", 'r')
+        content = load_file.read
+        load_json(content)
+    end
+
     def load_json(string)
-        data = JSON.load(string)
-        @guess = data[:guess]
-        @attempts_left = data[:attempts_left]
-        @secret_word = data[:secret_word]
-        @hidden_key = data[:hidden_key]
-        @prev_guesses = data[:prev_guesses]
+        data = JSON.parse string
+        @guess = data['guess']
+        @attempts_left = data['attempts_left']
+        @secret_word = data['secret_word']
+        @hidden_key = data['hidden_key']
+        @prev_guesses = data['prev_guesses']
     end
 end
